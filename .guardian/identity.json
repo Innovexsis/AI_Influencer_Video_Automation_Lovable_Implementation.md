@@ -1,0 +1,14 @@
+{
+  "schema": 2,
+  "repository": "vivekearthz/AI_Influencer_Video_Automation_Lovable_Implementation.md",
+  "portalKey": "aiinfluencervideoautomationlovableimplementationmd",
+  "role": "slave",
+  "master": "MARTECH",
+  "masterPortalKey": "marcomm",
+  "masterRepo": "Innovexsis/my-secret-automagic",
+  "masterHost": "https://my-secret-automagic.lovable.app",
+  "masterApiBase": "https://my-secret-automagic.lovable.app/api/public",
+  "patchVersion": "v76",
+  "agentVersion": 6,
+  "managedBy": "martech-master"
+}
