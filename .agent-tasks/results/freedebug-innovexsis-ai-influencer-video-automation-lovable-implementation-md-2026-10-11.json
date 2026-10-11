@@ -1,0 +1,39 @@
+{
+  "task_id": "freedebug-innovexsis-ai-influencer-video-automation-lovable-implementation-md-2026-10-11",
+  "agent": "free-ai-debugger",
+  "status": "issues_found",
+  "summary": "5 findings (2 serious).",
+  "findings": [
+    {
+      "severity": "critical",
+      "file": "supabase/migrations/20260824000024_rls_policies.sql",
+      "issue": "The RLS migration file is truncated and incomplete, leaving the 'social_accounts' table and potentially others without any security policies, which defaults to denying all access or allowing all if RLS isn't enabled.",
+      "fix": "Complete the migration file to enable RLS and add policies for all tables: ALTER TABLE public.social_accounts ENABLE ROW LEVEL SECURITY; CREATE POLICY \"social_accounts_member_all\" ON public.social_accounts FOR ALL USING (public.is_workspace_member(workspace_id));"
+    },
+    {
+      "severity": "high",
+      "file": "supabase/migrations/20260824000027_storage_buckets.sql",
+      "issue": "The storage policy migration is truncated, resulting in a syntax error ('replac') and failing to apply any security policies to the storage buckets. This leaves the storage system in an undefined or insecure state.",
+      "fix": "Complete the loop and policy definition: execute format('create policy %I on storage.objects for all using (bucket_id = %L and public.is_workspace_member_for_storage_path(name))', 'ws_access_' || bucket_id, bucket_id);"
+    },
+    {
+      "severity": "medium",
+      "file": "src/lib/supabase.ts",
+      "issue": "The application uses placeholder credentials if environment variables are missing, which will cause runtime failures on all Supabase calls in production if the build process doesn't catch the missing vars.",
+      "fix": "Throw a hard error in non-development environments if credentials are missing: if (!supabaseUrl || !supabaseAnonKey) { throw new Error('Missing Supabase credentials'); }"
+    },
+    {
+      "severity": "medium",
+      "file": "supabase/migrations/20260824000024_rls_policies.sql",
+      "issue": "The policy 'ai_providers_select_authenticated' allows 'anon' role access to global reference data. While intended for read-only, if the table contains sensitive metadata or internal URLs, it is exposed to unauthenticated users.",
+      "fix": "Restrict access to authenticated users only: create policy \"ai_providers_select_authenticated\" on public.ai_providers for select using (auth.role() = 'authenticated');"
+    },
+    {
+      "severity": "low",
+      "file": "supabase/migrations/20260824000023_ab_test_variants.sql",
+      "issue": "The 'ab_test_variants' table references 'workspaces' and 'campaigns' but the migrations for those parent tables are not provided in the snippet, which would cause a foreign key constraint failure during execution if they don't exist.",
+      "fix": "Ensure tables 'workspaces' and 'campaigns' are created before 'ab_test_variants' in the migration sequence."
+    }
+  ],
+  "reviewed_at": "2026-10-11T06:42:04.050Z"
+}
