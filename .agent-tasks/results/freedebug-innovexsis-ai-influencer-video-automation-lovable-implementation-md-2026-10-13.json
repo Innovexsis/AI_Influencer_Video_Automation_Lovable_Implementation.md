@@ -1,0 +1,27 @@
+{
+  "task_id": "freedebug-innovexsis-ai-influencer-video-automation-lovable-implementation-md-2026-10-13",
+  "agent": "free-ai-debugger",
+  "status": "issues_found",
+  "summary": "3 findings (3 serious).",
+  "findings": [
+    {
+      "severity": "high",
+      "file": "src/lib/utils.ts",
+      "issue": "Incorrect import from the `clsx` package. The library exports a default function, but the code uses a named import `{ clsx }`, resulting in `clsx` being undefined at runtime and causing a crash when `cn` is called.",
+      "fix": "Change the import to use the default export.\n```ts\n-import { clsx, type ClassValue } from \"clsx\";\n+import clsx, { type ClassValue } from \"clsx\";\n```"
+    },
+    {
+      "severity": "critical",
+      "file": "supabase/migrations/20260824000024_rls_policies.sql",
+      "issue": "The migration file ends abruptly with an incomplete statement (`crea`). This syntax error prevents the migration from running, breaking the database setup.",
+      "fix": "Complete or remove the unfinished statement. For example, if the intention was to create a policy for `social_accounts`, add the full statement or delete the stray text.\n```sql\n-- social_accounts ------------------------------------------------------------\nalter table public.social_accounts enable row level security;\n\ncreate policy \"social_accounts_member_all\" on public.social_accounts\n  for all using (public.is_workspace_member(workspace_id))\n  with check (public.is_workspace_member(workspace_id));\n```\nMake sure the file ends with a proper semicolon and no stray text."
+    },
+    {
+      "severity": "critical",
+      "file": "supabase/migrations/20260824000026_seed_platform_catalog.sql",
+      "issue": "The SQL file is truncated (`... \"fa`) resulting in invalid syntax and a failed migration.",
+      "fix": "Complete the last `INSERT` statement with the missing values and close the statement with a semicolon. For example:\n```sql\n  ('quora', 'Quora Spaces', 'manual',\n    '{\"text\": true, \"image\": true, \"video\": false, \"stories\": false, \"reels\": false, \"shorts\": false, \"scheduled\": false, \"direct_publish\": true}',\n    false, 'https://www.quora.com/', 210)\n);\n```\nEnsure the file ends cleanly with a semicolon."
+    }
+  ],
+  "reviewed_at": "2026-10-13T20:10:23.338Z"
+}
