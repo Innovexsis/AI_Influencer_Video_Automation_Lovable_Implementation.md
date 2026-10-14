@@ -1,0 +1,15 @@
+{
+  "task_id": "freedebug-innovexsis-ai-influencer-video-automation-lovable-implementation-md-2026-10-14",
+  "agent": "free-ai-debugger",
+  "status": "issues_found",
+  "summary": "1 findings (0 serious).",
+  "findings": [
+    {
+      "severity": "medium",
+      "file": "src/lib/utils.ts",
+      "issue": "The `cn` utility incorrectly imports and calls `clsx`. It uses a named import `clsx` which does not exist (clsx exports a default function) and passes the arguments as a single array to `clsx` instead of spreading them, resulting in incorrect class name merging and potential runtime errors.",
+      "fix": "Replace the import with a default import and spread the inputs when calling `clsx`.\n```ts\n- import { clsx, type ClassValue } from \"clsx\";\n+ import clsx, { type ClassValue } from \"clsx\";\n@@\n-export function cn(...inputs: ClassValue[]) {\n-  return twMerge(clsx(inputs));\n-}\n+export function cn(...inputs: ClassValue[]) {\n+  // Spread the inputs so each class value is processed correctly.\n+  return twMerge(clsx(...inputs));\n+}\n```"
+    }
+  ],
+  "reviewed_at": "2026-10-14T20:10:21.386Z"
+}
