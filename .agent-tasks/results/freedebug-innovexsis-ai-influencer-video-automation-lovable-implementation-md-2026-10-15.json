@@ -1,0 +1,15 @@
+{
+  "task_id": "freedebug-innovexsis-ai-influencer-video-automation-lovable-implementation-md-2026-10-15",
+  "agent": "free-ai-debugger",
+  "status": "issues_found",
+  "summary": "1 findings (1 serious).",
+  "findings": [
+    {
+      "severity": "high",
+      "file": "src/lib/utils.ts",
+      "issue": "Incorrect import from the `clsx` package. The library exports a default function, not a named export. Importing `{ clsx }` results in `clsx` being undefined at runtime, causing a TypeError when `cn` is called.",
+      "fix": "Change the import to use the default export and import the `ClassValue` type separately:\n```ts\n// src/lib/utils.ts\n-import { clsx, type ClassValue } from \"clsx\";\n+import clsx from \"clsx\";\n+import type { ClassValue } from \"clsx\";\n```"
+    }
+  ],
+  "reviewed_at": "2026-10-15T20:00:27.571Z"
+}
