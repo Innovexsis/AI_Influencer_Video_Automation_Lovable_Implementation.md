@@ -1,8 +1,15 @@
 {
   "task_id": "freedebug-innovexsis-ai-influencer-video-automation-lovable-implementation-md-2026-10-19",
   "agent": "free-ai-debugger",
-  "status": "passed",
-  "summary": "No real defects found in reviewed files.",
-  "findings": [],
-  "reviewed_at": "2026-10-19T20:00:37.952Z"
+  "status": "issues_found",
+  "summary": "1 findings (0 serious).",
+  "findings": [
+    {
+      "severity": "low",
+      "file": "src/lib/utils.ts",
+      "issue": "The `cn` utility incorrectly passes the entire `inputs` array as a single argument to `clsx`, which expects variadic arguments. While `clsx` can handle arrays, this adds an unnecessary nesting level and may cause unexpected class name handling.",
+      "fix": "Spread the inputs when calling `clsx`:\n```ts\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(...inputs));\n}\n```"
+    }
+  ],
+  "reviewed_at": "2026-10-19T20:20:22.172Z"
 }
