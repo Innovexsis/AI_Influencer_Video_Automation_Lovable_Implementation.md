@@ -1,0 +1,15 @@
+{
+  "task_id": "freedebug-innovexsis-ai-influencer-video-automation-lovable-implementation-md-2026-10-21",
+  "agent": "free-ai-debugger",
+  "status": "issues_found",
+  "summary": "1 findings (1 serious).",
+  "findings": [
+    {
+      "severity": "high",
+      "file": "src/lib/utils.ts",
+      "issue": "The `clsx` library is imported as a named export (`import { clsx } from \"clsx\"`), but `clsx` only provides a default export. This results in `clsx` being undefined at runtime, causing a crash when `cn` is called.",
+      "fix": "Replace the named import with a default import and keep the type import for `ClassValue`.\n```ts\n- import { clsx, type ClassValue } from \"clsx\";\n+ import clsx from \"clsx\";\n+ import type { ClassValue } from \"clsx\";\n```"
+    }
+  ],
+  "reviewed_at": "2026-10-21T20:00:27.316Z"
+}
