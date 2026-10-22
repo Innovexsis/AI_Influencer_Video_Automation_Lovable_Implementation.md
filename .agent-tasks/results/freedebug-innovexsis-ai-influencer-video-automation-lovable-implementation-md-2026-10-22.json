@@ -1,0 +1,21 @@
+{
+  "task_id": "freedebug-innovexsis-ai-influencer-video-automation-lovable-implementation-md-2026-10-22",
+  "agent": "free-ai-debugger",
+  "status": "issues_found",
+  "summary": "2 findings (1 serious).",
+  "findings": [
+    {
+      "severity": "high",
+      "file": "src/lib/utils.ts",
+      "issue": "Incorrect import of `clsx`. The library exports a default function, but the code uses a named import `{ clsx }`, resulting in `clsx` being undefined at runtime and causing a crash when `cn` is called.",
+      "fix": "Replace the named import with a default import and adjust the `cn` implementation to spread the arguments correctly.\n```ts\n// src/lib/utils.ts\n-import { clsx, type ClassValue } from \"clsx\";\n+import clsx, { type ClassValue } from \"clsx\";\n@@\n-export function cn(...inputs: ClassValue[]) {\n-  return twMerge(clsx(inputs));\n-}\n+export function cn(...inputs: ClassValue[]) {\n+  // `clsx` expects a variadic list of arguments, not a single array.\n+  // Spread the inputs so that class names are merged correctly before\n+  // passing the result to `twMerge`.\n+  return twMerge(clsx(...inputs));\n+}\n```"
+    },
+    {
+      "severity": "medium",
+      "file": "src/lib/utils.ts",
+      "issue": "`cn` passes the entire `inputs` array to `clsx` instead of spreading it, which prevents proper class name merging and can lead to unexpected UI styling issues.",
+      "fix": "Update the function to spread the arguments when calling `clsx` (as shown in the fix above)."
+    }
+  ],
+  "reviewed_at": "2026-10-22T20:00:27.612Z"
+}
