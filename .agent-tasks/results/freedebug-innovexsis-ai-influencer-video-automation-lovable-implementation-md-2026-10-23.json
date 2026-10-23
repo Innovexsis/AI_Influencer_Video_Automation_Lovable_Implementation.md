@@ -1,0 +1,21 @@
+{
+  "task_id": "freedebug-innovexsis-ai-influencer-video-automation-lovable-implementation-md-2026-10-23",
+  "agent": "free-ai-debugger",
+  "status": "issues_found",
+  "summary": "2 findings (2 serious).",
+  "findings": [
+    {
+      "severity": "high",
+      "file": "supabase/migrations/20260824000024_rls_policies.sql",
+      "issue": "The migration file ends abruptly with an incomplete line `crea`, causing a syntax error and preventing the migration from running.",
+      "fix": "Complete the truncated statement. For example, add the missing policy for `social_accounts` and terminate the file properly:\n```sql\n-- social_accounts ------------------------------------------------------------\nalter table public.social_accounts enable row level security;\n\ncreate policy \"social_accounts_member_all\" on public.social_accounts\n  for all using (public.is_workspace_member(workspace_id))\n  with check (public.is_workspace_member(workspace_id));\n```\nEnsure the file ends with a newline and no stray incomplete tokens."
+    },
+    {
+      "severity": "high",
+      "file": "supabase/migrations/20260824000027_storage_buckets.sql",
+      "issue": "The migration script is incomplete; the PL/pgSQL block that creates policies for each bucket is cut off, missing the closing `END;` and `$$;` delimiters, leading to a syntax error during migration.",
+      "fix": "Complete the loop and close the DO block. For example:\n```sql\nDO $$\nDECLARE\n  bucket_id text;\nBEGIN\n  FOREACH bucket_id IN ARRAY ARRAY['campaign-inputs', 'presenters', 'voices', 'raw-video', 'rendered-video', 'thumbnails', 'subtitles', 'exports']\n  LOOP\n    EXECUTE format(\n      'CREATE POLICY %I ON storage.objects FOR SELECT USING (bucket_id = %L AND (public.is_workspace_member_for_storage_path(name) OR EXISTS (SELECT 1 FROM storage.buckets b WHERE b.id = %L AND b.public)))',\n      'ws_select_' || replace(bucket_id, '-', '_'),\n      bucket_id,\n      bucket_id\n    );\n  END LOOP;\nEND $$;\n```\nMake sure the file ends after the `END $$;` statement."
+    }
+  ],
+  "reviewed_at": "2026-10-23T20:00:25.296Z"
+}
