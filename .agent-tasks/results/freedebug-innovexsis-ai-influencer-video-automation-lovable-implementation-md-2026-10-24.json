@@ -1,0 +1,15 @@
+{
+  "task_id": "freedebug-innovexsis-ai-influencer-video-automation-lovable-implementation-md-2026-10-24",
+  "agent": "free-ai-debugger",
+  "status": "issues_found",
+  "summary": "1 findings (1 serious).",
+  "findings": [
+    {
+      "severity": "high",
+      "file": "src/lib/utils.ts",
+      "issue": "Incorrect import of the `clsx` library: using a named import (`import { clsx, type ClassValue } from \"clsx\"`) while `clsx` only has a default export. This results in `clsx` being undefined at runtime, causing a crash when `cn` is called.",
+      "fix": "Change the import to use the default export and keep the type import for `ClassValue`:\n```ts\nimport clsx, { type ClassValue } from \"clsx\";\nimport { twMerge } from \"tailwind-merge\";\n\nexport function cn(...inputs: ClassValue[]) {\n  return twMerge(clsx(...inputs));\n}\n```"
+    }
+  ],
+  "reviewed_at": "2026-10-24T20:00:22.804Z"
+}
