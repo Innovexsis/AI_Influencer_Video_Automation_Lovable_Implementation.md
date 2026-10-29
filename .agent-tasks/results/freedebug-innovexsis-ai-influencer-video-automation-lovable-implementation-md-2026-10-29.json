@@ -1,0 +1,21 @@
+{
+  "task_id": "freedebug-innovexsis-ai-influencer-video-automation-lovable-implementation-md-2026-10-29",
+  "agent": "free-ai-debugger",
+  "status": "issues_found",
+  "summary": "2 findings (1 serious).",
+  "findings": [
+    {
+      "severity": "medium",
+      "file": "src/lib/utils.ts",
+      "issue": "The `cn` utility incorrectly passes the entire `inputs` array as a single argument to `clsx`. `clsx` expects a variadic list of class values, so the current implementation results in nested arrays and incorrect class name merging.",
+      "fix": "Change the implementation to spread the inputs when calling `clsx`:\n```ts\nexport function cn(...inputs: ClassValue[]) {\n  // Spread the inputs so clsx receives each class value separately\n  return twMerge(clsx(...inputs));\n}\n```"
+    },
+    {
+      "severity": "high",
+      "file": "supabase/migrations/20260824000027_storage_buckets.sql",
+      "issue": "The DO block that creates RLS policies for storage buckets is syntactically incomplete – it ends abruptly inside the `execute format(...)` call, missing the closing parentheses, the `END LOOP;`, and the final `END;`. This will cause the migration to fail when applied.",
+      "fix": "Complete the DO block with proper syntax. Example corrected version:\n```sql\nDO $$\nDECLARE\n  bucket_id text;\nBEGIN\n  FOREACH bucket_id IN ARRAY ARRAY['campaign-inputs', 'presenters', 'voices', 'raw-video', 'rendered-video', 'thumbnails', 'subtitles', 'exports']\n  LOOP\n    EXECUTE format(\n      'CREATE POLICY %I ON storage.objects FOR SELECT USING (bucket_id = %L AND (public.is_workspace_member_for_storage_path(name) OR EXISTS (SELECT 1 FROM storage.buckets b WHERE b.id = %L AND b.public)))',\n      'ws_select_' || replace(bucket_id, '-', '_'),\n      bucket_id,\n      bucket_id\n    );\n  END LOOP;\nEND $$;\n```\nThis adds the missing `END LOOP;` and `END $$;` and correctly constructs the policy name."
+    }
+  ],
+  "reviewed_at": "2026-10-29T20:00:26.513Z"
+}
