@@ -1,0 +1,27 @@
+{
+  "task_id": "freedebug-innovexsis-ai-influencer-video-automation-lovable-implementation-md-2026-11-03",
+  "agent": "free-ai-debugger",
+  "status": "issues_found",
+  "summary": "3 findings (2 serious).",
+  "findings": [
+    {
+      "severity": "medium",
+      "file": "src/lib/utils.ts",
+      "issue": "The `cn` utility passes the entire `inputs` array as a single argument to `clsx`, which can lead to incorrect class name merging because `clsx` expects its arguments to be spread.",
+      "fix": "Change the implementation to spread the inputs: `return twMerge(clsx(...inputs));`"
+    },
+    {
+      "severity": "high",
+      "file": "supabase/migrations/20260824000024_rls_policies.sql",
+      "issue": "The migration file ends with an incomplete line `crea`, which results in a syntax error and prevents the migration from running.",
+      "fix": "Remove the stray `crea` token or replace it with the intended statement (e.g., `create policy ...`). Ensure the file ends with a valid SQL statement and a terminating semicolon."
+    },
+    {
+      "severity": "high",
+      "file": "supabase/migrations/20260824000027_storage_buckets.sql",
+      "issue": "The `DO $$ ... $$;` block that creates storage policies is truncated. It lacks the closing parentheses for `format`, the `END LOOP;`, and the final `END;` of the PL/pgSQL block, causing a migration failure.",
+      "fix": "Complete the block, for example:\n```sql\nDO $$\nDECLARE\n  bucket_id text;\nBEGIN\n  FOREACH bucket_id IN ARRAY ARRAY['campaign-inputs','presenters','voices','raw-video','rendered-video','thumbnails','subtitles','exports']\n  LOOP\n    EXECUTE format(\n      'CREATE POLICY %I ON storage.objects FOR SELECT USING (bucket_id = %L AND (public.is_workspace_member_for_storage_path(name) OR EXISTS (SELECT 1 FROM storage.buckets b WHERE b.id = %L AND b.public)))',\n      'ws_select_' || bucket_id,\n      bucket_id,\n      bucket_id\n    );\n  END LOOP;\nEND $$;\n```\nMake sure the `format` call is closed, the loop ends with `END LOOP;`, and the block ends with `END $$;`."
+    }
+  ],
+  "reviewed_at": "2026-11-03T20:00:26.378Z"
+}
