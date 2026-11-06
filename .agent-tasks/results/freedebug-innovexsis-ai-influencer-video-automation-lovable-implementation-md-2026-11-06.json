@@ -1,0 +1,21 @@
+{
+  "task_id": "freedebug-innovexsis-ai-influencer-video-automation-lovable-implementation-md-2026-11-06",
+  "agent": "free-ai-debugger",
+  "status": "issues_found",
+  "summary": "2 findings (1 serious).",
+  "findings": [
+    {
+      "severity": "high",
+      "file": "src/lib/utils.ts",
+      "issue": "Incorrect import of `clsx`. The library exports a default function, but the code uses a named import `{ clsx }`, resulting in `clsx` being undefined at runtime and causing a crash when `cn` is called.",
+      "fix": "Change the import to use the default export and import the `ClassValue` type separately:\n```ts\n-import { clsx, type ClassValue } from \"clsx\";\n+import clsx, { type ClassValue } from \"clsx\";\n```"
+    },
+    {
+      "severity": "medium",
+      "file": "src/lib/utils.ts",
+      "issue": "`cn` passes the entire `inputs` array as a single argument to `clsx`, producing an incorrect class string (e.g., \"a,b\") or causing unexpected behavior.",
+      "fix": "Spread the `inputs` array when calling `clsx` so each value is treated as a separate argument:\n```ts\n-export function cn(...inputs: ClassValue[]) {\n-  return twMerge(clsx(inputs));\n-}\n+export function cn(...inputs: ClassValue[]) {\n+  return twMerge(clsx(...inputs));\n+}\n```"
+    }
+  ],
+  "reviewed_at": "2026-11-06T20:00:30.698Z"
+}
