@@ -1,0 +1,27 @@
+{
+  "task_id": "freedebug-innovexsis-ai-influencer-video-automation-lovable-implementation-md-2026-11-07",
+  "agent": "free-ai-debugger",
+  "status": "issues_found",
+  "summary": "3 findings (3 serious).",
+  "findings": [
+    {
+      "severity": "high",
+      "file": "src/lib/utils.ts",
+      "issue": "Incorrect import from the `clsx` package. The library exports a default function, not a named export. Importing `{ clsx }` results in `clsx` being undefined at runtime, causing a crash when `cn` is called.",
+      "fix": "Replace the named import with a default import and spread the arguments correctly:\n```ts\n-import { clsx, type ClassValue } from \"clsx\";\n+import clsx, { type ClassValue } from \"clsx\";\n@@\n-export function cn(...inputs: ClassValue[]) {\n-  return twMerge(clsx(inputs));\n-}\n+export function cn(...inputs: ClassValue[]) {\n+  // `clsx` expects a variadic list of class values, not a single array.\n+  return twMerge(clsx(...inputs));\n+}\n```"
+    },
+    {
+      "severity": "high",
+      "file": "supabase/migrations/20260824000024_rls_policies.sql",
+      "issue": "The migration file ends abruptly with an incomplete statement (`crea`). This syntax error will cause the migration to fail, breaking the database setup and potentially exposing tables without proper Row Level Security.",
+      "fix": "Complete or remove the stray fragment. The file should end after the last valid policy definition. For example:\n```sql\n-- social_accounts ------------------------------------------------------------\nalter table public.social_accounts enable row level security;\n\ncreate policy \"social_accounts_member_all\" on public.social_accounts\n  for all using (public.is_workspace_member(workspace_id))\n  with check (public.is_workspace_member(workspace_id));\n\n-- (remove the stray \"crea\" fragment)\n```"
+    },
+    {
+      "severity": "high",
+      "file": "supabase/migrations/20260824000027_storage_buckets.sql",
+      "issue": "The PL/pgSQL block that creates storage policies is incomplete; the `foreach` loop and `execute format` statement are not closed, leading to a syntax error during migration.",
+      "fix": "Close the loop and the `do` block properly. Example corrected snippet:\n```sql\nDO $$\nDECLARE\n  bucket_id text;\nBEGIN\n  FOREACH bucket_id IN ARRAY ARRAY['campaign-inputs', 'presenters', 'voices', 'raw-video', 'rendered-video', 'thumbnails', 'subtitles', 'exports']\n  LOOP\n    EXECUTE format(\n      'CREATE POLICY %I ON storage.objects FOR SELECT USING (bucket_id = %L AND (public.is_workspace_member_for_storage_path(name) OR EXISTS (SELECT 1 FROM storage.buckets b WHERE b.id = %L AND b.public)))',\n      'ws_select_' || replace(bucket_id, '-', '_'),\n      bucket_id,\n      bucket_id\n    );\n  END LOOP;\nEND $$;\n```"
+    }
+  ],
+  "reviewed_at": "2026-11-07T20:00:25.142Z"
+}
