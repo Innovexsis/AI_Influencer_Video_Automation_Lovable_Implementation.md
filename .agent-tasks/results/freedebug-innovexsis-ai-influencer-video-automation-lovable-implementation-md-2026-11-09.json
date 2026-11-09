@@ -1,0 +1,21 @@
+{
+  "task_id": "freedebug-innovexsis-ai-influencer-video-automation-lovable-implementation-md-2026-11-09",
+  "agent": "free-ai-debugger",
+  "status": "issues_found",
+  "summary": "2 findings (2 serious).",
+  "findings": [
+    {
+      "severity": "critical",
+      "file": "supabase/migrations/20260824000024_rls_policies.sql",
+      "issue": "The migration file is truncated (ends with \"crea\"), resulting in invalid SQL that will cause the migration to fail.",
+      "fix": "Complete the truncated statement. For example, finish the CREATE POLICY for the \"social_accounts\" table and ensure the file ends with a proper semicolon:\n```sql\n-- social_accounts ------------------------------------------------------------\nalter table public.social_accounts enable row level security;\n\ncreate policy \"social_accounts_member_all\" on public.social_accounts\n  for all using (public.is_workspace_member(workspace_id))\n  with check (public.is_workspace_member(workspace_id));\n```\nMake sure the file ends with a newline and no dangling text."
+    },
+    {
+      "severity": "critical",
+      "file": "supabase/migrations/20260824000027_storage_buckets.sql",
+      "issue": "The DO block that creates storage policies is incomplete (truncated at \"replac\"), causing a syntax error in the migration.",
+      "fix": "Complete the DO block by finishing the policy name construction and closing the loop and block. For example:\n```sql\ndo $$\ndeclare\n  bucket_id text;\nbegin\n  foreach bucket_id in array array['campaign-inputs', 'presenters', 'voices', 'raw-video', 'rendered-video', 'thumbnails', 'subtitles', 'exports']\n  loop\n    execute format(\n      'create policy %I on storage.objects for select using (bucket_id = %L and (public.is_workspace_member_for_storage_path(name) or exists (select 1 from storage.buckets b where b.id = %L and b.public)))',\n      'ws_select_' || replace(bucket_id, '-', '_'),\n      bucket_id,\n      bucket_id\n    );\n  end loop;\nend $$;\n```\nEnsure the statement ends with a semicolon and the file contains no stray characters."
+    }
+  ],
+  "reviewed_at": "2026-11-09T20:00:28.399Z"
+}
