@@ -1,0 +1,15 @@
+{
+  "task_id": "freedebug-innovexsis-ai-influencer-video-automation-lovable-implementation-md-2026-11-10",
+  "agent": "free-ai-debugger",
+  "status": "issues_found",
+  "summary": "1 findings (1 serious).",
+  "findings": [
+    {
+      "severity": "high",
+      "file": "src/lib/utils.ts",
+      "issue": "The `clsx` library is imported as a named export and called with an array (`clsx(inputs)`). `clsx` only has a default export and expects its arguments to be spread, so `clsx` is undefined at runtime and `cn` throws a TypeError when used.",
+      "fix": "Import the default export from `clsx` and spread the arguments when calling it:\n```ts\n-import { clsx, type ClassValue } from \"clsx\";\n+import clsx, { type ClassValue } from \"clsx\";\n@@\n-export function cn(...inputs: ClassValue[]) {\n-  return twMerge(clsx(inputs));\n-}\n+export function cn(...inputs: ClassValue[]) {\n+  // `clsx` expects its arguments to be passed individually, not as an array.\n+  // Spreading `inputs` ensures proper class name merging before handing the\n+  // result to `twMerge`.\n+  return twMerge(clsx(...inputs));\n+}\n```"
+    }
+  ],
+  "reviewed_at": "2026-11-10T20:00:29.760Z"
+}
